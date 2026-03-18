@@ -1,0 +1,2406 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap');
+
+/* Couleur de fond globale pour tout le site */
+body,
+#page-container,
+#main-content,
+.et_pb_section,
+#et-main-area {
+    background-color: #fff9ef !important;
+}
+
+/*Traduction de l'expression "Share This" de Monarch par "Partager" */
+.et_social_heading {
+	font-size: 0!important;
+}
+.et_social_heading::before {
+	content: "Partager";
+	font-family: "Source sans Pro";
+	font-size: 18px !important;
+}
+
+
+/* Bannière cookies */
+
+.cmplz-cookiebanner {
+	right: 0 !important;
+	bottom: 50px !important;
+	animation: slideInRight 1s ease-out !important;
+}
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.cmplz-cookiebanner .cmplz-header {
+    grid-template-columns: max-content !important;
+    }
+
+.cmplz-cookiebanner .cmplz-logo img {
+    max-height: 60px !important;
+}
+
+.cmplz-cookiebanner .cmplz-title {
+	font-size: 18px !important
+}
+
+button.cmplz-btn.cmplz-manage-consent.manage-consent-1.cmplz-show {
+    display: none;
+}
+
+/*=== MINICART ===*/
+
+/* Ondes globales (stables, hors DOM panier) */
+body.cart-wave::before,
+body.cart-wave::after {
+    content: '';
+    position: fixed;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    border: 3px solid #ad9267;
+    left: var(--cart-x);
+    top: var(--cart-y);
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+    animation: pulseWave 1.2s ease-out forwards;
+    pointer-events: none;
+    z-index: 99999 !important;
+}
+
+body.cart-wave::after {
+    animation-delay: 0.4s;
+}
+
+@keyframes pulseWave {
+    from { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+    to   { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
+}
+
+/* Compteur – structure stable (aucun décalage menu) */
+.cart-count {
+    display: inline-block !important;
+    min-width: 30px;
+    min-height: 30px;
+    position: relative;
+    background-color: transparent;
+    border-radius: 50%;
+
+}
+
+/* Nombre centré */
+.cart-count p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+    color: #f3efe6;
+    font-family: "Assistant";
+}
+
+/* Masqué quand panier vide */
+.cart-count.hidethis {
+    opacity: 0 !important;
+    
+}
+
+/* Apparition douce du background */
+.cart-count.loaded {
+    animation: bgAppear 0.6s ease-out forwards;
+}
+
+/* Apparition du nombre */
+.cart-count.loaded p {
+    animation: fadeInNumber 0.3s ease-out 0.2s forwards;
+}
+
+/* Animations */
+@keyframes bgAppear {
+    from {
+        background-color: rgba(173,146,103,0);
+        transform: scale(0.85);
+    }
+    to {
+        background-color: rgba(173,146,103,1);
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInNumber {
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+
+/* Minicarte - Structure */
+.bodycommerce-minicart {   	
+	padding-bottom: 0px !important;
+	display: block;
+    opacity: 0;		 
+		pointer-events: none;
+    box-shadow: 6px 6px 18px -3px rgba(0,0,0,.3);
+    z-index: 900 !important;
+    transition: opacity 0.3s ease;
+	}
+
+/* Bloquer minicarte pendant séquence ajout panier */
+.bodycommerce-minicart.mc-blocked {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.bodycommerce-minicart.active, .bodycommerce-minicart.active-always {
+    opacity: 1;		
+		pointer-events: auto;    
+}
+
+
+/* Minicarte - Typographie */
+.bodycommerce-minicart .woocommerce-mini-cart__total.total,
+.woocommerce-mini-cart__total.total,
+.woocommerce-mini-cart-item.mini_cart_item .quantity,
+.woocommerce-mini-cart-item .cart-item-upd-quantity {
+    font-family: "Assistant";
+}
+
+.bodycommerce-minicart .button,
+.bc-added-modal-container .bc-added-buttons .button {
+    font-family: "Oswald";
+    font-weight: 500 !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+body .bodycommerce-minicart .dropdown-minicart .woocommerce-mini-cart__buttons .wc-forward {
+    line-height: 1.8em !important;
+}
+
+/* Minicarte - Layout */
+.bodycommerce-minicart .woocommerce-mini-cart-item .item-contents.has-quantity-update {
+    justify-content: flex-start;
+}
+
+.woocommerce-mini-cart-item .cart-item-upd-quantity {
+    margin-top: 10px;
+}
+.bodycommerce-minicart .woocommerce-mini-cart-item .item-upper>span {
+	padding-right: 20px !important;
+	padding-top: 5px !important
+}
+
+/* Minicarte - Bouton Remove */
+body .bodycommerce-minicart .woocommerce-mini-cart-item .cart-item-delete {
+    right: 5px !important;
+	top: 3px !important
+}
+
+.woocommerce-mini-cart-item.mini_cart_item .remove-mini-cart,
+.bodycommerce-minicart .woocommerce-mini-cart.cart_list li .remove-mini-cart {
+    width: 25px !important;
+    height: 25px;
+    line-height: 1.3em;
+    transition: all 0.3s ease;
+}
+
+.bodycommerce-minicart .woocommerce-mini-cart.cart_list li {
+	padding-left: 5px !important
+}
+
+/* ====================================================================
+   MINICART - STABILITÉ ABSOLUE PENDANT SUPPRESSION
+   ==================================================================== */
+
+/* Forcer la minicarte à rester visible pendant qu'on la survole en suppression + Transition fluide quand la classe active est présente*/
+.bodycommerce-minicart.active {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+	transition: opacity 0.3s ease, max-height 0.5s ease !important;
+}
+
+/* Remettre la transition normale quand pas active */
+.bodycommerce-minicart:not(.active) {
+    transition: opacity 0.3s ease, max-height 0.5s ease !important;
+}
+
+
+/* ====================================================================
+   OVERLAY DE SUPPRESSION
+   ==================================================================== */
+
+/* S'assurer que l'overlay couvre bien le produit */
+.mini_cart_item .blockUI.blockOverlay {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 1000 !important;
+}
+
+/* Overlay avec spinner engrenages */
+.woocommerce-mini-cart .blockUI.blockOverlay,
+.et_pb_wc_cart_mini .blockUI.blockOverlay, .total-panier .blockUI.blockOverlay, .total-produits .blockUI.blockOverlay {
+    background: rgba(0, 0, 0, 0.45) !important;
+    opacity: 1 !important;
+    cursor: default !important;
+}
+
+/* Grand engrenage */
+.woocommerce-mini-cart .blockUI.blockOverlay::before,
+.et_pb_wc_cart_mini .blockUI.blockOverlay::before, .total-panier .blockUI.blockOverlay::before, .total-produits .blockUI.blockOverlay::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36px;
+    height: 36px;
+    margin: -18px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(circle 8px at 18px 18px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 18px 0px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 0px 18px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 36px 18px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 18px 36px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 30px 5px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 30px 30px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 5px 30px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 5px 5px, rgba(0,0,0,0.45) 100%, transparent 0);
+    background-repeat: no-repeat;
+    animation: gearSpin 3s linear infinite;
+}
+
+/* Petit engrenage */
+.woocommerce-mini-cart .blockUI.blockOverlay::after,
+.et_pb_wc_cart_mini .blockUI.blockOverlay::after, .total-panier .blockUI.blockOverlay::after, .total-produits .blockUI.blockOverlay::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -3px 0 0 10px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(circle 5px at 12px 12px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 12px 0px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 0px 12px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 24px 12px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 12px 24px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 20px 3px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 20px 20px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 3px 20px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 3px 3px, rgba(0,0,0,0.45) 100%, transparent 0);
+    background-repeat: no-repeat;
+    animation: gearSpinReverse 4s linear infinite;
+}
+
+@keyframes gearSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+@keyframes gearSpinReverse {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Garder le curseur normal pendant la suppression */
+.woocommerce-cart-form__cart-item.updating,
+.mini_cart_item.blockOverlay,
+.cart_item.updating,
+.blockOverlay,
+.processing,
+.blockOverlay * {
+    cursor: default !important;
+}
+
+/* Désactiver smooth scroll dans la minicarte */
+.bodycommerce-minicart,
+.bodycommerce-minicart * {
+    scroll-behavior: auto !important;
+}
+
+
+
+
+/* ====================================================================
+   HAUTEUR DYNAMIQUE MINICARTE
+   ==================================================================== */
+
+/* Conteneur de la minicarte avec transition fluide */
+.bodycommerce-minicart-container {
+    transition: min-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+	 overflow: hidden;
+}
+
+/* Liste de produits avec transition fluide */
+.woocommerce-mini-cart.cart_list {
+    transition: min-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+
+
+/* Masquer le compteur sur pages panier et commande */
+.page-id-8 a.cart-link-a.et-cart-info.cart-link.bc-first,
+.page-id-9 a.cart-link-a.et-cart-info.cart-link.bc-first {
+    display: none;
+}
+
+/* Overlay avec spinner engrenages */
+.woocommerce-mini-cart .blockUI.blockOverlay,
+.et_pb_wc_cart_mini .blockUI.blockOverlay {
+    background: rgba(0, 0, 0, 0.45) !important;
+    opacity: 1 !important;
+    position: absolute !important;    
+}
+
+/* Grand engrenage */
+.woocommerce-mini-cart .blockUI.blockOverlay::before,
+.et_pb_wc_cart_mini .blockUI.blockOverlay::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36px;
+    height: 36px;
+    margin: -18px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(circle 8px at 18px 18px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 18px 0px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 0px 18px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 36px 18px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 18px 36px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 30px 5px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 30px 30px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 5px 30px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 4px at 5px 5px, rgba(0,0,0,0.45) 100%, transparent 0);
+    background-repeat: no-repeat;
+    animation: gearSpin 3s linear infinite;
+}
+
+/* Petit engrenage */
+.woocommerce-mini-cart .blockUI.blockOverlay::after,
+.et_pb_wc_cart_mini .blockUI.blockOverlay::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -3px 0 0 10px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(circle 5px at 12px 12px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 12px 0px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 0px 12px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 24px 12px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 12px 24px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 20px 3px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 20px 20px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 3px 20px, rgba(0,0,0,0.45) 100%, transparent 0),
+        radial-gradient(circle 2.5px at 3px 3px, rgba(0,0,0,0.45) 100%, transparent 0);
+    background-repeat: no-repeat;
+    animation: gearSpinReverse 4s linear infinite;
+}
+
+@keyframes gearSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+@keyframes gearSpinReverse {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Garder le curseur normal pendant la suppression dans le panier */
+.woocommerce-cart-form__cart-item.updating,
+.mini_cart_item.blockOverlay,
+.cart_item.updating,
+.blockOverlay,
+.processing {
+    cursor: default !important;
+}
+
+.blockOverlay * {
+    cursor: default !important;
+}
+
+/* Cibler spécifiquement les overlays WooCommerce */
+.blockUI.blockOverlay {
+    cursor: default !important;
+}
+
+/*=== TOOLTIPS ===*/
+
+#podcast-storage {
+    display: none !important;
+}
+
+.tooltip-radiopresence, .tooltip-radiocourtoisie, .tooltip-tvlibertes {
+    position: absolute;
+    display: none;
+    background: #fff9ef;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 99999;
+    min-width: 250px;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 10px;
+}
+
+.tooltip-radiopresence::before, .tooltip-radiocourtoisie::before, .tooltip-tvlibertes::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #e0e0e0;
+}
+
+.tooltip-radiopresence h4, .tooltip-radiocourtoisie h4, .tooltip-tvlibertes h4 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+}
+
+.tooltip-radiopresence h5, .tooltip-radiocourtoisie h5, .tooltip-tvlibertes h5 {
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    background: #EDE7D8 !important;
+    margin-top: 25px;
+    padding: 10px 0 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.tooltip-radiopresence h5:hover {
+    background: #0175b5 !important;
+    color: #fff9ef !important;
+    transform: translateX(5px);
+}
+.tooltip-radiocourtoisie h5:hover {
+	background: #0175b5 !important;
+    color: #fff9ef !important;
+    transform: translateX(5px);
+}
+.tooltip-tvlibertes h5:hover {
+	background: #0175b5 !important;
+    color: #fff9ef !important;
+    transform: translateX(5px);
+}
+.podcast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.podcast-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #EDE7D8 !important;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333 !important;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.podcast-item:hover {
+    background: #0175b5 !important;
+    color: #fff9ef !important;
+    transform: translateX(5px);
+}
+
+.podcast-icon {
+    font-size: 24px;
+}
+
+.podcast-name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.radiopresence, .radiocourtoisie  {
+    cursor: pointer;
+}
+
+/* Pop-up Overlay */
+.podcast-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 999999;
+    display: none;
+    padding: 20px;
+}
+
+.podcast-popup-overlay.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.podcast-popup-close {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    font-size: 32px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    line-height: 1;
+    padding: 5px 15px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    z-index: 1000000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.podcast-popup-close:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
+}
+
+.podcast-player-container {
+    max-width: 600px;
+    width: 100%;
+    animation: popupSlideIn 0.3s ease;
+}
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.podcast-player-container .et_pb_audio_module {
+    margin: 0 !important;
+}
+
+.page-id-1082 {
+    background-color: #fff9ef;
+}
+
+
+
+/*=== MENU ===*/
+
+.et_search_form_container input {
+    font-family: "Marcellus";
+}
+
+#main-header, #main-header.et-fixed-header {
+    -webkit-box-shadow: 0px 6px 18px 0px rgba(0, 0, 0, .2) !important;
+    -moz-box-shadow: 0px 6px 18px 0px rgba(0, 0, 0, .2) !important;
+    box-shadow: 0px 6px 18px 0px rgba(0, 0, 0, .2) !important;
+    background: linear-gradient(to bottom, #f3efe6 0%, #f3efe6 50%, #f3efe6 100%) !important;
+    
+}
+
+#top-menu a:hover {
+    color: #85392B;
+}
+
+#logo, #logo img {
+    overflow: visible !important;
+}
+
+/*=== ACCUEIL ===*/
+
+/* Hero section */
+.et_pb_fullwidth_header .header-content {
+    padding: 0px;
+}
+
+.et_pb_fullwidth_header .et_pb_fullwidth_header_scroll {
+    position: absolute;
+    top: 33vw;
+    left: 88vw;
+    right: auto;
+    text-align: right;
+    opacity: 0;
+}
+
+.et_pb_fullwidth_header_0.loaded .et_pb_fullwidth_header_scroll {
+    animation: fadeIn 0.8s ease-out 2.6s forwards, bounce 2s ease-in-out 3s infinite;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+}
+
+/*=== EFFETS VISUELS ===*/
+
+/* Effet reflet sur images Divi */
+.et_pb_image.reflet .et_pb_image_wrap {
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+.et_pb_image.reflet .et_pb_image_wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -83%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-25deg);
+    transition: left 0.7s ease;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.et_pb_image.reflet:hover .et_pb_image_wrap::before {
+    animation: reflet-slide 0.7s ease forwards;
+}
+
+@keyframes reflet-slide {
+    from { left: -85%; }
+    to { left: 140%; }
+}
+
+/* Effet reflet pour image produit vedette */
+.et_pb_image.img-produit-vedette {
+    position: relative;
+}
+
+.et_pb_image.img-produit-vedette .et_pb_image_wrap {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.et_pb_image.img-produit-vedette img {
+    display: block;
+}
+
+.et_pb_image.img-produit-vedette .et_pb_image_wrap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-25deg);
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0s;
+}
+
+.et_pb_image.img-produit-vedette img:hover ~ .et_pb_image_wrap::before,
+.et_pb_image.img-produit-vedette .et_pb_image_wrap:hover::before {
+    opacity: 1;
+    animation: reflet-slide 0.7s ease forwards;
+}
+
+/* Effet soulignement progressif auteurs */
+.product_meta a[rel="tag"],
+.posted_in a {
+    position: relative;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.product_meta a[rel="tag"]::after,
+.posted_in a::after {
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #333, #666);
+    transition: width 0.4s ease;
+}
+
+.product_meta a[rel="tag"]:hover::after,
+.posted_in a:hover::after {
+    width: 110%;
+}
+
+.product_meta a[rel="tag"]:hover,
+.posted_in a:hover {
+    color: #666;
+}
+
+/* Effet soulignement titres h3 diapo */
+.diapo h3 {
+    position: relative;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    cursor: pointer;
+    display: table;
+}
+
+.diapo h3::after {
+    content: '';
+    position: absolute;
+    bottom: 3px !important;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #333, #666);
+    transition: width 0.4s ease;
+}
+
+.diapo h3:hover::after {
+    width: 110%;
+}
+
+.diapo h3:hover {
+    color: #666;
+}
+
+/* Présentation texte */
+.texte p {
+    line-height: 1.6em !important;
+    margin-bottom: -0.8em !important;
+}
+
+/* === TYPOGRAPHIE === */
+.titre, h1.entry-title.main_title {
+    font-size: 46px !important;
+    letter-spacing: 2.2px;
+}
+
+h2.wc-block-components-title.wc-block-components-title {
+    font-family: "Marcellus";
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px;
+}
+
+/* Classe soulignement personnalisé */
+.souligne, h1.entry-title.main_title {
+    position: relative;
+    z-index: 2;
+}
+
+.souligne::after, h1.entry-title.main_title::after {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important;
+    background-color: #ad9267 !important;
+    z-index: -1 !important;
+}
+
+.souligne:not(.text-right) {
+    display: inline-block;
+}
+
+.souligne.text-right {
+    display: block;
+    text-align: right;
+}
+
+.souligne.text-right::after {
+    left: auto !important;
+    right: 0;
+}
+
+.epais::after {
+    height: 8px;
+    width: 8em;
+    bottom: 8px;
+}
+h1.entry-title.main_title::after {
+    height: 8px;
+    width: 8em;
+    bottom: 8px;
+}
+
+.moyen::after {
+    height: 6px;
+    width: 8em;
+    bottom: 10.5px;
+}
+
+/*=== BOUTIQUE ===*/
+
+/* Effet reflet images produits WooCommerce */
+.woocommerce-LoopProduct-link {
+    display: block;
+    line-height: 0;
+    filter: drop-shadow(0px 32px 32px rgba(20,22,23,0.3));
+}
+
+span.et_shop_image {
+    position: relative;
+    display: block;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
+    clip-path: inset(0);
+}
+
+span.et_shop_image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    vertical-align: bottom;
+}
+
+span.et_shop_image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-25deg);
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0s;
+}
+
+span.et_shop_image:hover::before {
+    opacity: 1;
+    animation: reflet-slide-woo 0.7s ease forwards;
+}
+
+@keyframes reflet-slide-woo {
+    from { left: -100%; }
+    to { left: 140%; }
+}
+
+/* Prix */
+.prix bdi {
+    font-size: 28px;
+}
+/* Ajouter au panier */
+button.single_add_to_cart_button.button.alt.ajax_add_to_cart {
+    opacity: 1;
+    background: transparent;
+    color: #6c8fab;
+    border-color: #6c8fab;
+    transition: opacity 0.4s ease !important;
+}
+
+/* Masquer le bouton via JS */
+button.single_add_to_cart_button.button.alt.ajax_add_to_cart.hidden-transition {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s ease !important;
+}
+
+/*=== PANIER ===*/
+
+.woocommerce-cart .hidethis {
+    display: block !important;
+}
+
+.page-id-8 ul.et_social_icons_container, .page-id-9 * ul.et_social_icons_container, .page-id-6752 ul.et_social_icons_container {
+	display: none
+}
+
+/* Auteurs */
+
+.media {
+    transition: all 0.3s ease;
+  }
+ .media:hover {
+    transform: translatey(-3px);
+  } 
+
+.media a {
+    display: table !important;
+}
+
+
+
+/*=== RESPONSIVE ===*/
+
+@media only screen and ( max-width: 1280px) {
+	
+	/* == Accueil == */
+	
+	.logo {
+  transform: scale(0.9);
+  transform-origin: top left;
+}
+	
+	.et_pb_header_content_wrapper {
+		font-size: 27px !important;
+		margin-top: -12.3vw !important
+	}
+	
+	.et_pb_fullwidth_header .et_pb_fullwidth_header_scroll {
+		top: 32vw !important
+	}
+	
+	.et_pb_row.et_pb_row_0.ligne-titre-catalogue {
+		padding-top: 0px !important
+	}
+	
+/* Produit */
+	
+	.couv {
+		width: 300px !important;
+		box-shadow: 0px 60px 60px -10px rgba(20, 22, 23, 0.5) !important;
+	}
+	
+	.titre-produit h1 {
+		font-size: 44px !important;		}
+	
+	.titre-produit::after {
+		width: 110% !important;
+		height: 6px;
+    bottom: 3px !important;
+	}
+	.auteur a {
+    font-size: 26px !important;
+}
+	.description-courte {
+		font-size: 18px !important;
+	}
+	.prix bdi {
+    font-size: 26px 
+}
+	.atc .button {
+    font-size: 21px !important;
+}
+	
+	div#tab-description, div#tab-bc_custom_tab_1 {
+		font-size: 16px !important
+	}
+	
+	/* Auteurs */
+	
+	.auteur-section1 {
+		padding-top: 5vw !important
+	}
+	
+	.ligne-auteur1 {
+		width: 85% !important
+	}
+	
+	.ligne-auteur1-col1 {
+		margin-right: 4% !important
+	}
+	.auteur-nom h2 {
+		font-size: 41px !important
+	}
+	.texte p {
+		font-size: 17.1px;
+		line-height: 2.4vw !important
+	}
+	
+	.auteur-section2 {
+    padding-top: 60px !important;
+}
+	.auteur-ouvrages-col1 {
+		padding-right: 1.5vw !important
+	}
+	.auteur-ouvrages-titre h2 {
+		font-size: 39px !important
+	}
+	.auteur-ouvrages-texte p {
+		font-size: 17.1px;
+		padding-bottom: 0.6em
+	}
+	.et_pb_column.et_pb_column_1_3.et_pb_column_3_tb_body.auteur-ouvrages-col2.et_pb_css_mix_blend_mode_passthrough.et-last-child {
+		min-width: 250px !important
+	}
+	
+	.auteur-titre2 {
+		font-size: 45px !important
+	}
+	
+	.ligne-logos-1 .et_pb_image img {
+		max-height: 5.87vw !important;
+	}
+	
+	.ligne-logos-2 .et_pb_image, .ligne-logos-3 .et_pb_image  {
+ transform: scale(0.95) !important;
+    }
+	 .et-db #et-boc .et-l .et_pb_row_5_tb_body.et_pb_row.ligne-logos-3 {
+		 padding-top: 35px !important
+	}
+}
+
+@media only screen and ( max-width: 1024px) {
+	
+	
+	
+	/* == Accueil == */
+	
+	.logo {
+  transform: scale(0.85);
+}
+	
+	.et_pb_header_content_wrapper {
+		font-size: 26px !important;
+		margin-top: -14.5vw !important
+	}
+	
+	.et_pb_fullwidth_header .et_pb_fullwidth_header_scroll {
+		top: 36vw !important
+	}
+	
+	/* Produit */
+	
+	.couv {
+		width: 280px !important;
+		box-shadow: 0px 60px 60px -10px rgba(20, 22, 23, 0.45) !important;
+	}
+	
+	.titre-produit h1 {
+		font-size: 42px !important;		}
+	
+	.titre-produit::after {
+		width: 110% !important
+	}
+	.auteur a {
+    font-size: 24px !important;
+}
+	.description-courte {
+		font-size: 17px !important;
+	}
+	
+	.atc .quantity input.qty {
+		width: 4em;
+	}
+	.atc .quantity input.qty.text {
+    text-align: center !important;
+}
+	
+	div#tab-description, div#tab-bc_custom_tab_1 {
+		padding: 35px 45px 40px 45px;
+	}
+	
+	/* Auteurs */
+	
+	body.tax-product_tag .monarch-tag-mobile-btn {
+        display: block !important;
+    }
+    body.tax-product_tag .monarch-tag-mobile-bar {
+    bottom: 0 !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+}
+
+body.tax-product_tag .monarch-tag-mobile-bar .et_social_networks {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    padding-bottom: 20px !important;
+}
+	
+	
+	.auteur-section1 {
+		padding-top: 6vw !important
+	}
+	.auteur-illu {
+		width: 95% !important
+	}
+	.auteur-nom h2 {
+		font-size: 40px !important
+	}
+	.texte p {
+		font-size: 16px;
+		line-height: 2.45vw !important
+	}
+	
+	.auteur-section2 {
+    padding-top: 60px !important;
+}
+	
+	.ligne-auteur2 {
+		width: 85% !important
+	}
+	
+	.auteur-ouvrages-col1 {
+		padding-right: 1.5vw !important
+	}
+	.auteur-ouvrages-titre h2 {
+		font-size: 38px !important
+	}
+	.auteur-ouvrages-texte p {
+		font-size: 16px;
+		padding-bottom: 0.5em
+	}
+	.et_pb_column.et_pb_column_1_3.et_pb_column_3_tb_body.auteur-ouvrages-col2.et_pb_css_mix_blend_mode_passthrough.et-last-child {
+		min-width: 230px !important
+	}
+	
+	.auteur-titre2 {
+		font-size: 44px !important
+	}
+	
+	.media {
+    transition: none;
+  }
+ .media:hover {
+    transform: none;
+  } 
+	
+		
+	.ligne-logos-1, .ligne-logos-2, .ligne-logos-3 {
+		width: 85% !important
+	}
+	
+	.ligne-logos-1 .et_pb_image img {
+        max-height: 6.8vw !important;
+    }
+	
+	.et-db #et-boc .et-l .et_pb_row_4_tb_body.et_pb_row.ligne-logos-2 {
+		 padding-top: 40px !important
+	}
+	
+.ligne-logos-3 .et_pb_image {
+	transform: scale(0.9) !important;
+	}
+	
+	/* Footer */
+	
+	.section-footer {
+		padding-bottom: 25px !important
+	}
+	
+}
+
+@media only screen and ( max-width: 981px) {
+	
+	/* == Menu == */
+	
+	/* Menu fixe tablette + mobile */
+	
+.et_non_fixed_nav.et_transparent_nav #main-header, .et_non_fixed_nav.et_transparent_nav #top-header, .et_fixed_nav #main-header, .et_fixed_nav #top-header {
+    position: fixed;
+}
+	#logo {
+		max-height: 75%;
+	}
+	
+	.et_mobile_menu {
+		background: #f3efe6;
+		border-top: 0px;
+		box-shadow: 0px 32px 64px -24px rgba(20,22,23,0.2);
+    -moz-box-shadow: 0px 32px 64px -24px rgba(20,22,23,0.2);
+    -webkit-box-shadow: 0px 32px 64px -24px rgba(20,22,23,0.2)
+	}
+	.et_mobile_menu li a {
+    border-bottom: 2px solid rgba(0, 0, 0, .05);
+  font-size: 16px;
+}
+	
+	/* Minicarte */
+	
+	.bodycommerce-minicart {
+    top: 56px !important;
+    }
+	
+	.bodycommerce-minicart-container {
+    height: auto !important;
+    
+    overflow-y: auto !important;
+  }
+	
+	.bodycommerce-minicart .close::after {
+		top: -6px;
+		left: 25px
+	}
+	
+	/* == Accueil == */
+	
+	.logo {
+  transform: scale(0.8);
+}
+	
+	.et_pb_header_content_wrapper {
+		font-size: 25px !important;
+		margin-left: 10% !important
+	}
+	
+	/* Produit */
+	.colonne-couv {
+        width: 80%;
+}
+	.et_pb_wc_images_0_tb_body.couv {
+		width: 260px !important;
+		margin-right: auto !important;
+        margin-left: 0px !important;
+	}
+	.couv {
+		box-shadow: 0px 52px 52px -12px rgba(20, 22, 23, 0.4) !important;
+	}
+	.titre-produit h1 {
+		font-size: 4.2vw !important;		}
+	
+	.titre-produit::after {
+		width: 105% !important
+	}
+	.auteur .product_meta {
+    padding-top: 0px !important;
+		margin-top: -15px
+}
+	.auteur a {
+    font-size: 22px !important;
+}
+	.description-courte {
+        margin-top: -5px;
+        margin-bottom: 20px !important;
+    }
+	.prix bdi {
+    font-size: 25px 
+}
+	.prix.et_pb_db_price_0_tb_body .price .bc-price-after {
+    font-size: 15px !important;
+}
+	.atc .quantity input.qty {
+        width: 3.6em;
+    }
+	
+	.atc .button {
+    font-size: 20px !important;
+}
+	
+	div#tab-description, div#tab-bc_custom_tab_1 {
+		font-size: 15.5px !important;
+		padding: 30px 40px 45px;
+	}
+	
+	/* Auteurs */
+	
+	.auteur-section1 {
+		padding-top: 40px !important
+	}
+	
+	.ligne-auteur1 {
+		padding-top: 20px !important;
+		padding-bottom: 0px !important
+	}
+	
+	.ligne-auteur1-col1 {
+		margin-right: 4% !important;
+		width: 65% !important
+	}
+	
+	.auteur-nom h2 {
+		font-size: 39px !important
+	}
+	.texte p {
+		font-size: 15px;
+		line-height: 2.4vw !important;
+        width: 105%;
+	}
+	
+	
+	
+	.auteur-ouvrages-col1 {
+		padding-right: 9vw !important
+	}
+	.auteur-ouvrages-titre h2 {
+		font-size: 37px !important
+	}
+	.auteur-ouvrages-texte p {
+		font-size: 15px;
+		padding-bottom: 0.5em;
+		line-height: 1.6em;
+	}
+	.et-db #et-boc .et-l .et_pb_text_3_tb_body.auteur-ouvrages-texte {
+		margin-top: 10px !important
+	}
+	.et_pb_column.et_pb_column_1_3.et_pb_column_3_tb_body.auteur-ouvrages-col2.et_pb_css_mix_blend_mode_passthrough.et-last-child {
+		min-width: 220px !important
+	}
+	
+	.auteur-titre2 {
+		font-size: 43px !important
+	}
+	
+	.ligne-logos-2 .et_pb_image  {
+ transform: scale(0.90) !important;
+    }
+	
+	
+	
+}
+
+@media only screen and ( max-width: 881px) {
+	
+	.bodycommerce-minicart {
+   position: absolute !important;
+        width: 330px !important;
+        left: auto !important;
+        
+  }
+	
+	
+	/* == Accueil == */
+	.et_pb_section.et_pb_section_0.section-banniere {
+    padding-bottom: 80px;
+}
+	
+	.logo {
+  transform: scale(0.75);
+}
+	
+	.et_pb_header_content_wrapper {
+		font-size: 23px !important;
+		margin-left: 8% !important;
+		margin-top: -15.5vw !important;
+	}
+	
+	    .et_pb_fullwidth_header .et_pb_fullwidth_header_scroll {
+        top: 35vw !important;
+    }
+	
+	/* Produit */
+	
+	.et_pb_wc_images_0_tb_body.couv {
+		width: 240px !important
+	}
+	
+	.titre-produit h1 {
+		font-size: 32px !important;		}
+	
+	.titre-produit::after {
+		width: 105% !important;
+		height: 5px;
+        bottom: 2px !important;
+	}
+	.auteur .product_meta {
+        margin-top: -20px;
+    }
+	.auteur a {
+    font-size: 20px !important;
+}
+	
+	
+	div#tab-description, div#tab-bc_custom_tab_1 {
+		font-size: 15px !important
+	}
+	
+		/* Auteurs */
+	
+	.auteur-illu span.et_pb_image_wrap.has-box-shadow-overlay {
+    box-shadow: 0px 32px 32px -12px rgba(20, 22, 23, 0.5) !important;
+}
+	
+	.ligne-auteur1 .ligne-auteur1-col1.is-floated {
+        float: left !important;
+        width: 250px !important;
+        margin: 0 20px 0px 0 !important;
+        display: block !important;
+    }
+    
+    .ligne-auteur1 {
+    display: block !important;
+    }
+    
+    .ligne-auteur1 .et_pb_column_3_5 {
+        width: 100% !important;
+        display: block !important;
+    }
+
+		.auteur-nom h2 {
+		font-size: 38px !important
+	}
+		
+	.texte p {
+		font-size: 17px;
+		line-height: 1.8em!important;
+		width: 102%
+	}
+	
+	.auteur-ouvrages-col1 {
+		padding-right: 5vw !important
+	}
+	.auteur-ouvrages-titre h2 {
+		font-size: 36px !important
+	}
+	.auteur-ouvrages-texte p {
+		font-size: 17px;
+		padding-bottom: 0.2em;
+	}
+	.et-db #et-boc .et-l .et_pb_text_3_tb_body.auteur-ouvrages-texte {
+		margin-top: 0px !important
+	}
+	.et_pb_column.et_pb_column_1_3.et_pb_column_3_tb_body.auteur-ouvrages-col2.et_pb_css_mix_blend_mode_passthrough.et-last-child {
+		min-width: 240px !important
+	}
+	.auteur-ouvrages-couv span.et_pb_image_wrap.has-box-shadow-overlay {
+        box-shadow: 0px 32px 32px -12px rgba(20, 22, 23, 0.35) !important;
+}
+	
+	.auteur-titre2 {
+		font-size: 42px !important
+	}
+	
+	.ligne-logos-2 .et_pb_image {
+ transform: scale(0.85) !important;
+    }
+	.ligne-logos-3 {
+		width: 90% !important;
+		
+}
+	
+	.ligne-logos-3 .et_pb_image {
+		transform: scale(0.8) !important;
+	}
+	div#auteur-ligne-codes {
+		padding-top: 0px !important
+	}
+	}
+
+@media only screen and ( max-width: 767px) {
+    
+	/* == Accueil == */
+	
+	    .et_pb_section.et_pb_section_0.section-banniere {
+        padding-bottom: 60px;
+    }
+
+	
+	.et_pb_fullwidth_header .et_pb_fullwidth_header_container.left .header-content {
+        margin: 0;
+    }
+	
+	
+	
+	.logo {
+  transform: scale(0.7);
+}
+	
+	.et_pb_header_content_wrapper {
+		font-size: 21px !important;
+		margin-left: 7% !important;
+			}
+	
+	/* Produit */
+	
+	.ligne-produit {
+		width: 85% !important
+	}
+	.et_pb_wc_images_0_tb_body.couv  {
+		width: 220px !important;
+		margin-right: 50px !important;
+	}
+	
+	.couv {
+		box-shadow: 0px 48px 48px -16px rgba(20, 22, 23, 0.35) !important;
+	}
+	
+	.titre-produit h1 {
+		font-size: 30px !important;		}
+	
+	.titre-produit::after {
+		width: 105% !important
+	}
+		
+	.auteur a {
+    font-size: 19px !important;
+}
+	.description-courte {
+		font-size: 16px !important;
+		margin-top: -15px;
+        margin-bottom: 15px !important;
+	}
+	
+	.atc .quantity input.qty {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+	
+	.atc .button {
+    font-size: 19px !important;
+}
+	
+	div#tab-description, div#tab-bc_custom_tab_1 {
+		font-size: 14.5px !important
+	}
+	
+	/* Auteurs */
+	
+	.ligne-auteur1 .ligne-auteur1-col1.is-floated {
+    width: 240px !important;
+            }
+    
+		.auteur-nom h2 {
+		font-size: 36px !important
+	}
+	
+	.auteur-nom::after {
+		bottom: 13px !important;
+    width: 110% !important;
+    height: 6px;
+	}
+		
+	.texte p {
+		font-size: 16px;
+		line-height: 1.9em!important;
+		width: 100%;
+		margin-top: -10px
+	}
+	
+	.auteur-ouvrages-col1 {
+		padding-right: 5vw !important
+	}
+	.auteur-ouvrages-titre h2 {
+		font-size: 35px !important
+	}
+	.auteur-ouvrages-texte p {
+		font-size: 16px;
+		padding-bottom: 0em;
+	}
+	.et-db #et-boc .et-l .et_pb_text_3_tb_body.auteur-ouvrages-texte {
+		margin-top: -10px !important
+	}
+	.et_pb_column.et_pb_column_1_3.et_pb_column_3_tb_body.auteur-ouvrages-col2.et_pb_css_mix_blend_mode_passthrough.et-last-child {
+		min-width: 220px !important
+	}
+	
+	.auteur-titre2 {
+		font-size: 41px !important
+	}
+	
+	.et-db #et-boc .et-l .et_pb_row_4_tb_body.et_pb_row.ligne-logos-2 {
+		 padding-top: 30px !important
+	}
+	
+	.et-db #et-boc .et-l .et_pb_row_5_tb_body.et_pb_row.ligne-logos-3 {
+		 padding-top: 25px !important
+	}
+	
+	 .ligne-logos-3 {
+        justify-content: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+		 }
+    	
+   .ligne-logos-3 .et_pb_image {
+		 flex: 1 1 30% !important;
+        max-width: 30% !important;
+        min-width: 0 !important;		 
+	}
+	
+	.ligne-logos-3 .et_pb_image {
+		transform: scale(0.9) !important;
+	}
+	.familledabord img {
+    margin-top: -5px !important;
+}
+}
+
+
+@media only screen and ( max-width: 685px) {
+	
+	div#et-top-navigation {
+        padding-top: 0px !important;
+		padding-left: 70px
+    }
+	#et-top-navigation .et-cart-info {
+        margin-top: 17px;
+    }
+	
+	.cart-count {
+		min-width: 27px;
+    min-height: 27px;
+		width: 27px !important
+	}
+		
+	.cart-count.loaded {
+    margin-right: 0px !important;
+  }
+
+	.cart-count p {
+		font-size: 16px
+	}
+	span.mobile_menu_bar.mobile_menu_bar_toggle.et_divi_100_custom_hamburger_menu__icon {
+		top: 12.5px
+	}
+	
+	    .et_pb_section.et_pb_section_0.section-banniere {
+        padding-bottom: 40px;
+    }
+	
+	.logo {
+  transform: scale(0.60);
+}
+	
+	.et_pb_header_content_wrapper {
+        font-size: 3.5vw !important;      
+		margin-top: -17vw !important;
+    }
+	
+	
+	.et_pb_fullwidth_header_0.loaded .et_pb_fullwidth_header_scroll {
+		display: none
+	}
+	
+	/* Produit */
+	
+	.et_pb_wc_images_0_tb_body.couv  {
+		width: 210px !important;
+		margin-right: 50px !important;
+	}
+	
+	.titre-produit h1 {
+		font-size: 26px !important;		}
+	
+	.titre-produit::after {
+    width: 110% !important;
+    height: 4px;
+    bottom: 2.5px !important;
+}
+	.titre-produit.multiline::after {
+    left: 0 !important;
+}
+	
+	.auteur .product_meta {
+        margin-top: -25px;
+    }
+	.auteur a {
+    font-size: 18px !important;
+}
+	
+	
+	.description-courte {
+		font-size: 15.5px !important;
+	}
+	.prix bdi {
+    font-size: 24px 
+}
+    .prix.et_pb_db_price_0_tb_body .price .bc-price-after {
+        font-size: 14px !important;
+    }	
+	.atc .quantity input.qty {
+        width: 3.1em;
+    }
+	
+	.atc .button {
+        font-size: 2.76vw !important;
+        margin-left: -5px !important;
+    }
+	
+	.ligne-description {
+		width: 85%
+	}
+	div#tab-description, div#tab-bc_custom_tab_1 {
+		font-size: 14px !important;
+		line-height: 2em;
+	}
+	
+	/* Auteurs */
+	
+	.ligne-auteur1 {
+        padding-top: 10px !important;
+    }
+	.ligne-auteur1 .ligne-auteur1-col1.is-floated {
+    width: 220px !important;
+            }
+    
+		.auteur-nom h2 {
+		font-size: 4.9vw !important
+	}
+			
+	.texte p {
+		font-size: 15px;
+		line-height: 1.8em!important;
+		margin-top: -15px
+	}
+	
+	    .ligne-auteur2 {
+        width: 90% !important;
+    }
+
+	    .auteur-ouvrages-col1 {
+        padding-right: 4vw !important;
+        padding-left: 10px;
+    }
+	
+	.auteur-ouvrages-titre h2 {
+		font-size: 34px !important
+	}
+	.auteur-ouvrages-texte p {
+		font-size: 15px;
+		
+	}
+	.et-db #et-boc .et-l .et_pb_text_3_tb_body.auteur-ouvrages-texte {
+		margin-top: -15px !important
+	}
+	.auteur-section2 {
+		padding-bottom: 0px !important
+	}
+	.auteur-section3 {
+		padding-top: 0px !important
+	}
+	
+	.auteur-titre2 {
+		font-size: 40px !important
+	}
+	
+	.ligne-logos-1 .et_pb_column, .ligne-logos-2 .et_pb_column {
+   display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px !important;
+    }
+    
+ .ligne-logos-1 .et_pb_image {
+   width: 45% !important;
+    flex: 0 0 45% !important;
+    display: flex !important;
+    justify-content: center !important;
+    }
+	
+	.ligne-logos-1 .et_pb_image.radiopresence {
+    flex: 0 0 auto !important;
+    width: auto !important;
+}
+	
+	.ligne-logos-1 .et_pb_image:nth-child(3),
+    .ligne-logos-1 .et_pb_image:nth-child(4) {
+        margin-top: 30px !important;
+    }
+	
+	.ligne-logos-1 .et_pb_image img {
+  max-height: 65px !important;
+}
+	.et-db #et-boc .et-l .et_pb_row_4_tb_body.et_pb_row.ligne-logos-2 {
+	padding-top: 0px !important;
+	}
+	
+	.ligne-logos-2 .et_pb_image:nth-child(1),
+    .ligne-logos-2 .et_pb_image:nth-child(2) {
+        flex: 0 0 45% !important;
+			transform: scale(0.55) !important;
+			margin-top: -8vw;
+    }
+    
+    .ligne-logos-2 .et_pb_image:nth-child(3),
+    .ligne-logos-2 .et_pb_image:nth-child(4),
+    .ligne-logos-2 .et_pb_image:nth-child(5) {
+        flex: 0 0 30% !important;
+    }
+    
+    .ligne-logos-2 .et_pb_image {
+        display: flex !important;
+        justify-content: center !important;
+    }
+	
+	.ligne-logos-2 .et_pb_module.et_pb_image.radiopresence,
+.ligne-logos-2 .et_pb_module.et_pb_image.radiocourtoisie {
+    display: table !important;
+}
+	
+	.ligne-logos-2 .et_pb_image:nth-child(3), .ligne-logos-2 .et_pb_image:nth-child(5) {
+        transform: scale(0.75) !important;
+		margin-top: -8vw
+}
+	
+	.ligne-logos-2 .et_pb_image:nth-child(4) {
+		transform: scale(1.05) !important;
+		margin-top: -8vw
+	}
+	
+	    .et-db #et-boc .et-l .et_pb_row_5_tb_body.et_pb_row.ligne-logos-3 {
+        padding-top: 0px !important;
+    }
+	
+	
+}
+
+@media only screen and ( max-width: 585px) {
+	
+	.et_pb_section.et_pb_section_0.section-banniere {
+        padding-bottom: 30px;
+    }
+	
+	.logo {
+  transform: scale(0.55);
+}
+	
+	.et_pb_header_content_wrapper {
+        margin-top: -18.5vw !important;
+    }
+	
+	
+	/* Produit */
+	
+	 .ligne-produit {
+        position: relative !important;
+        overflow: visible !important;
+		 margin-bottom: 25px
+    }
+    
+    .colonne-produit {
+        position: absolute !important;
+        top: 30px !important;
+        left: 49.4% !important;
+        width: 50.6% !important;
+    }
+	.et_pb_wc_images_0_tb_body.couv  {
+		width: 36vw !important;
+        margin-right: 6vw !important;
+	}
+	
+	    .description-courte, .prix {
+		margin-bottom: 2vw !important
+	}
+	
+	.prix bdi {
+    font-size: 23px 
+}
+	
+	.atc .quantity input.qty {
+        width: 2.9em;
+        padding: 8px 10px;
+    }
+	
+	    .atc .button {
+        font-size: 2.94vw !important;
+        margin-left: -10px !important;
+    }
+	
+	div#tab-description, div#tab-bc_custom_tab_1 {
+		padding: 30px 25px 40px;
+	}
+	
+	/* Auteurs */
+	
+	    .ligne-auteur1 {
+        padding-top: 0px !important;
+    }
+	 .ligne-auteur1 .et_pb_column_3_5 {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .ligne-auteur1 .ligne-auteur1-col1.is-floated {
+        float: none !important;
+        order: 2 !important;
+        width: 100% !important;
+        margin: 0 0 15px 0 !important;
+    }
+    
+    .ligne-auteur1 .et_pb_column_3_5 > .et_pb_text_0_tb_body {
+        order: 1 !important;
+    }
+    
+    .ligne-auteur1 .et_pb_column_3_5 > .et_pb_text_1_tb_body {
+        order: 3 !important;
+    }
+	
+	.auteur-nom h2 {
+		font-size: 38px !important;
+        text-align: center !important;
+	}
+	
+	.ligne-auteur1 .et_pb_text_0_tb_body {
+        display: table !important;
+        margin: 0 auto !important;
+    }
+	
+	.auteur-illu {
+		margin: 50px auto 0 auto !important;
+		width: 300px !important
+	}
+	    .texte p {
+        font-size: 16px;
+        line-height: 1.6em !important;
+        margin-top: 15px;
+        text-align: justify !important;
+    }
+	
+	.auteur-section2 {
+        padding-top: 10px !important;
+    }
+	.ligne-auteur2 {
+        width: 85% !important;
+        flex-direction: column !important;
+    }
+.ligne-auteur2 .auteur-ouvrages-col2.is-stacked {
+        float: none !important;
+        width: 60% !important;
+        margin: 15px auto !important;
+        display: block !important;
+        text-align: center !important;
+    }
+	.et-db #et-boc .et-l .et_pb_column_3_tb_body.auteur-ouvrages-col2 {
+		width: 100% !important
+	}
+	    .auteur-ouvrages-col1 {
+        padding-right: 0px !important;
+        padding-left: 0px;
+    }
+	.ligne-auteur2 .auteur-ouvrages-titre {
+        display: table !important;
+        margin: 0 auto !important;
+    }
+	.auteur-ouvrages-titre h2 {
+		font-size: 34px !important;
+		text-align: center !important
+	}
+	    .auteur-ouvrages-couv {
+        width: 270px !important;
+        margin: 60px auto 70px auto !important;
+	}
+	.auteur-ouvrages-texte p {
+		font-size: 16px;
+		text-align: justify !important;
+		line-height: 1.6em !important;
+		padding-bottom: 1em
+			}
+	
+	
+	.auteur-titre2 {
+		font-size: 39px !important
+	}
+	.auteur-ligne-titre3 {
+		padding-bottom: 10px !important
+	}
+	.ligne-logos-1 .et_pb_image img {
+        max-height: 11vw !important;
+        width: auto !important;
+    }
+	
+	    .et-db #et-boc .et-l .et_pb_row_4_tb_body.et_pb_row.ligne-logos-2 {
+        padding-bottom: 20px !important;
+    }
+	
+	
+	.ligne-logos-3 .et_pb_column {
+        flex-wrap: wrap !important;
+    }
+    
+    .ligne-logos-3 .et_pb_image:nth-child(1),
+    .ligne-logos-3 .et_pb_image:nth-child(2) {
+        flex: 0 0 45% !important;
+        max-width: 45% !important;
+    }
+    
+    .ligne-logos-3 .et_pb_image:nth-child(3) {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+        margin-top: 15px !important;
+    }
+	
+	.ligne-logos-3 .et_pb_image {
+		transform: scale(0.8) !important;
+	}
+	
+.familledabord img {
+    margin-top: 20px !important;
+}  
+	
+}
+
+@media only screen and ( max-width: 485px) {
+	
+	 #main-header .container {
+        display: flex !important;
+        align-items: center;
+        flex-wrap: nowrap !important;
+    }
+    div#et-top-navigation {
+        padding-left: 0px !important;
+        margin-left: auto;
+        float: none !important;
+    }
+	
+	
+	 span.shop-cart {
+        position: static !important;
+    }
+    .bodycommerce-minicart {
+        position: fixed !important;
+        width: 80vw !important;
+        left: 50% !important;
+        right: auto !important;
+        top: 56px !important;
+        margin: 0 !important;
+        transform: translateX(-50%) !important;
+    }
+	
+	.et_pb_header_content_wrapper {
+        margin-top: -135px !important;
+        font-size: 20px !important;
+        line-height: 0.95em !important;
+    }
+	
+	
+	/* Produit */
+	 
+ .ligne-produit {
+  flex-direction: column;
+	align-items: center;
+	position: static !important;
+  margin-bottom: -100px !important;
+}
+	
+ .colonne-produit {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  width: 100% !important;
+    }
+	.et_pb_wc_images_0_tb_body.couv  {
+		width: 260px !important;
+        margin-right: auto !important;
+        margin-left: auto !important;
+	}
+	.colonne-produit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+	
+	.titre-produit h1 {
+		font-size: 28px !important;
+	margin-top: 75px;
+	}
+	
+	.titre-produit::after {
+    width: 105% !important;
+    height: 4px;
+    bottom: 2.5px !important;
+}
+	
+	.auteur .product_meta {
+        margin-top: -25px;
+    }
+	.auteur a {
+    font-size: 20px !important;
+}
+	.description-courte {
+		font-size: 17px !important;
+        text-align: center !important;
+		margin-top: -5px;
+        margin-bottom: 20px !important;
+	}
+	.prix {
+		margin-bottom: 20px !important
+	}
+	.prix bdi {
+    font-size: 26px 
+}
+	.prix.et_pb_db_price_0_tb_body .price .bc-price-after {
+        font-size: 15px !important;
+    }	
+	.atc {
+        text-align: center !important;
+}
+	.atc .quantity input.qty {
+        width: 3.5em;
+        padding: 12px 10px;
+    }
+	.atc .button {
+    font-size: 21px !important;
+}
+	    .ligne-description {
+        width: 90%;
+    }
+	
+	/* Auteurs */
+	
+	.auteur-section1 {
+		padding-top: 35px !important
+	}
+	.auteur-nom h2 {
+		font-size: 35px !important;
+	}
+	
+	.auteur-illu {
+		margin-top: 35px !important;
+		width: 280px !important
+	}
+	
+	.auteur-ouvrages-couv {
+        width: 250px !important;
+		margin-top: 40px !important
+	}
+	
+	.auteur-titre2 {
+		font-size: 38px !important;
+	}
+	.auteur-ligne-titre3 {
+		padding-bottom: 0px !important
+	}
+	    .ligne-logos-1 .et_pb_image img {
+        max-height: 13vw !important;
+    }
+	    .ligne-logos-2 .et_pb_image:nth-child(1), .ligne-logos-2 .et_pb_image:nth-child(2) {
+			transform: scale(0.65) !important;
+        margin-top: -5vw;
+    }
+	
+	.ligne-logos-2 .et_pb_image:nth-child(3), .ligne-logos-2 .et_pb_image:nth-child(5) {
+        transform: scale(0.9) !important;
+        margin-top: -4vw;
+    }
+	.ligne-logos-2 .et_pb_image:nth-child(4) {
+        transform: scale(1.15) !important;
+        margin-top: -4vw;
+    }
+	.ligne-logos-3 .et_pb_image {
+        transform: scale(0.9) !important;
+    }
+}
+
+@media only screen and ( max-width: 479px ) {
+	
+	/* Produits */
+	
+	.colonne-couv {
+        width: 100%;
+    }
+}
+
+@media only screen and ( max-width: 380px) {
+	.bodycommerce-minicart {
+		width: 85vw !important
+	}
+	
+	.woocommerce-mini-cart-item.mini_cart_item a, .bodycommerce-minicart .woocommerce-mini-cart.cart_list li a, .woocommerce-mini-cart-item.mini_cart_item .quantity {
+    font-size: 14px !important;
+}
+	
+	body .bodycommerce-minicart .dropdown-minicart .woocommerce-mini-cart__buttons .wc-forward {
+		font-size: 6vw !important
+	}
+	
+	/* Produit */
+	
+	.et_pb_wc_images_0_tb_body.couv  {
+		width: 85% !important;
+        
+	}
+	
+	.titre-produit h1 {
+		font-size: 26px !important;
+		text-align: center;
+	}
+	
+	
+	.auteur a {
+    font-size: 19px !important;
+}
+	.description-courte {
+		font-size: 16px !important;
+	}
+	.prix bdi {
+    font-size: 26px 
+}
+	.atc .button {
+    font-size: 6vw !important;
+}
+	
+	div#tab-description, div#tab-bc_custom_tab_1 {
+		
+	}
+	
+	/* Auteurs */
+	
+	
+	
+	.auteur-nom h2 {
+		font-size: 30px !important;
+	}
+	.auteur-nom::after {
+        bottom: 12px !important;
+        width: 108% !important;
+        height: 5px;
+    }
+	.auteur-illu {
+		width: 260px !important
+	}
+	.texte p {
+        font-size: 15px;
+        }
+	
+	    .auteur-section1 {
+        padding-bottom: 0px !important;
+    }
+	
+	 .auteur-section2 {
+        padding-top: 0px !important;
+    }
+	
+	.auteur-ouvrages-couv {
+        width: 230px !important;
+	}
+	.auteur-ouvrages-texte p {
+		font-size: 15px;
+		}
+	
+	.auteur-titre2 {
+		font-size: 37px !important;
+		margin-top: -25px !important
+	}
+	
+	.auteur-ligne-titre3 {
+		padding-top: 40px !important
+	}
+	
+	 .ligne-logos-1 .et_pb_image,
+    .ligne-logos-2 .et_pb_image,
+    .ligne-logos-3 .et_pb_image,
+    .ligne-logos-2 .et_pb_image:nth-child(1),
+    .ligne-logos-2 .et_pb_image:nth-child(2),
+    .ligne-logos-2 .et_pb_image:nth-child(3),
+    .ligne-logos-2 .et_pb_image:nth-child(4),
+    .ligne-logos-2 .et_pb_image:nth-child(5),
+    .ligne-logos-3 .et_pb_image:nth-child(1),
+    .ligne-logos-3 .et_pb_image:nth-child(2),
+    .ligne-logos-3 .et_pb_image:nth-child(3) {
+        flex: 0 0 100% !important;
+        max-width: 80% !important;
+        margin-top: 15px !important;
+    }
+	
+	    .ligne-logos-1 {
+        width: 100% !important;
+				padding-top: 15px !important
+    }
+	.ligne-logos-1 .et_pb_image img {
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: 65px !important;
+    }
+	
+ .ligne-logos-2 .et_pb_image:nth-child(1),
+    .ligne-logos-2 .et_pb_image:nth-child(2),
+    .ligne-logos-2 .et_pb_image:nth-child(3),
+    .ligne-logos-2 .et_pb_image:nth-child(4),
+    .ligne-logos-2 .et_pb_image:nth-child(5) {
+        flex: 0 0 100% !important;
+        max-width: 80% !important;
+        margin-top: 15px !important;
+        transform: none !important;
+    }
+    
+    .ligne-logos-2 .et_pb_image img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    
+    .et_pb_module.et_pb_image.kepiblanc, .et_pb_module.et_pb_image.legiondhonneur, .et_pb_module.et_pb_image.medaillemilitaire, .et_pb_module.et_pb_image.epaulette, .et_pb_module.et_pb_image.dlp, .et_pb_module.et_pb_image.familledabord {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+	
+	.et_pb_module.et_pb_image.radiocourtoisie,
+.et_pb_module.et_pb_image.tvlibertes {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+	.et_pb_module.et_pb_image.radiocourtoisie img, .et_pb_module.et_pb_image.tvlibertes img {
+        max-width: 140px !important;
+        width: 140px !important;
+    }
+	
+	.et_pb_module.et_pb_image.legiondhonneur img, .et_pb_module.et_pb_image.medaillemilitaire img {
+        max-width: 150px !important;
+        width: 150px !important;
+    }
+    
+	.et_pb_module.et_pb_image.kepiblanc img {
+        max-width: 210px !important;
+        width: 210px !important;
+    }
+	
+    .ligne-logos-2 .et_pb_column {
+        flex-direction: column !important;
+    align-items: center !important;
+    }
+	
+	.radiopresence img {
+        margin-top: 15px !important;
+}
+	
+	.ligne-logos-2 .et_pb_image:nth-child(4), .ligne-logos-2 .et_pb_image:nth-child(5) {
+        margin-top: 30px !important;
+    }
+	.dlp img {
+		margin-top: -15px !important;
+		width: 210px !important
+	}
+	.epaulette img {
+		width: 220px !important
+	}
+	.familledabord img {
+		width: 230px !important
+	}
+}
+
+@media only screen and ( max-width: 325px) {
+	.atc .quantity input.qty {
+        width: 3em;
+        padding: 10px 8px;
+    }
+	
+	/* Auteurs */
+	
+	.auteur-nom h2 {
+		font-size: 9.5vw !important;
+	}
+	
+	.auteur-illu {
+		width: 95% !important
+	}
+	
+}

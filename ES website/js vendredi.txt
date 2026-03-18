@@ -1,0 +1,101 @@
+head :
+
+<style>
+/* === ICÔNE FACEBOOK MENU === */
+#main-header #top-menu .menu-item a[href*="facebook"] {
+    font-size: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+#main-header #top-menu .menu-item a[href*="facebook"]::before {
+    font-family: "ETmodules" !important;
+    content: "\e093" !important;
+    font-size: 18px !important;
+    color: #d18000 !important;
+    transition: color .25s !important;
+    line-height: 1 !important;
+}
+#main-header #top-menu .menu-item a[href*="facebook"]:hover::before {
+    color: #966205 !important;
+}
+
+/* === BOUTON CONTACT === */
+#main-header #top-menu .menu-item a[href*="contact"] {
+    position: relative !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+    color: #fff3dc !important;
+    border-radius: 2px !important;
+    z-index: 0 !important;
+}
+#main-header #top-menu .menu-item a[href*="contact"]::after {
+    content: "" !important;
+    position: absolute !important;
+    top: -10px !important;
+    bottom: 25px !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: #d18000 !important;
+    border-radius: 2px !important;
+    z-index: -1 !important;
+    transition: background .25s !important;
+}
+/* Texte blanc, hover fond crème */
+#main-header #top-menu .menu-item a[href*="contact"] {
+    color: #fff3dc !important;
+    transition: color .25s !important;
+}
+#main-header #top-menu .menu-item a[href*="contact"]:hover {
+    color: #fff3dc !important;
+}
+#main-header #top-menu .menu-item a[href*="contact"]:hover::after {
+    background: #966205 !important;
+}
+</style>
+
+
+body : 
+
+<script>
+window._echoScrollInit = true;
+document.addEventListener('click', function(e) {
+  var link = e.target.closest('a[href="#echo-ticker"]');
+  if (!link) return;
+  e.preventDefault();
+  e.stopPropagation();
+  var target = document.querySelector('#echo-ticker');
+  if (!target) return;
+  var start = window.scrollY;
+  var end = target.getBoundingClientRect().top + window.scrollY - 200;
+  var duration = 800;
+  var startTime = null;
+  function ease(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    window.scrollTo(0, start + (end - start) * ease(progress));
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}, true);
+</script>
+
+<script>
+var yearEl = document.getElementById('current-year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+</script>
+
+<script>
+document.querySelectorAll('[data-depuis]').forEach(function(el) {
+    if (!el) return;
+    var annees = new Date().getFullYear() - parseInt(el.getAttribute('data-depuis'));
+    if (el.tagName === 'SPAN' && !el.classList.length) {
+        el.textContent = annees;
+    } else {
+        el.innerHTML = annees + '<sup>ans</sup>';
+    }
+});
+	
+	
+</script>
+	

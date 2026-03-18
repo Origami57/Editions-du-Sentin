@@ -1,0 +1,675 @@
+<?php
+
+/* Chargement des styles du parent. */
+add_action( 'wp_enqueue_scripts', 'wpchild_enqueue_styles' );
+function wpchild_enqueue_styles(){
+  wp_enqueue_style( 'wpm-Divi-style', get_template_directory_uri() . '/style.css' );
+}
+
+add_action('wp_enqueue_scripts', function() {
+    if (is_front_page()) {
+        wp_enqueue_script('wc-cart-fragments');
+    }
+});
+
+// Alternative : désactiver le crop pour toutes les miniatures
+add_filter( 'woocommerce_cart_item_thumbnail', function( $image, $cart_item, $cart_item_key ) {
+    $product = $cart_item['data'];
+    return $product->get_image( 'full', array( 'class' => 'cart-item-image' ) );
+}, 10, 3 );
+
+
+add_filter( 'woocommerce_product_tabs', 'remove_additional_information_tab', 98 );
+function remove_additional_information_tab( $tabs ) {
+    unset( $tabs['additional_information'] );
+    return $tabs;
+}
+
+// Afficher nom du produit, catégorie, sous-catégorie, prix, tag et description courte
+
+function eds_get_product($id = null) {
+    $id = $id ?? get_the_ID();
+    return !empty($id) ? wc_get_product($id) : null;
+}
+
+function eds_get_cat($id, $sous = false) {
+    $cats = get_the_terms($id, 'product_cat');
+    if (empty($cats) || is_wp_error($cats)) return '';
+    if ($sous) {
+        $sous_cats = array_values(array_filter((array)$cats, fn($c) => $c->parent !== 0));
+        return $sous_cats ? $sous_cats[0]->name : '';
+    }
+    $primary = get_post_meta($id, '_yoast_wpseo_primary_product_cat', true);
+    if ($primary) {
+        $cat = get_term($primary, 'product_cat');
+        if ($cat && !is_wp_error($cat)) return $cat->name;
+    }
+    return $cats[0]->name;
+}
+
+add_shortcode('nom_produit', function($a) {
+    $a = shortcode_atts(['id' => ''], $a);
+    $p = eds_get_product($a['id']);
+    return $p ? $p->get_name() : '';
+});
+
+add_shortcode('description_produit', function($a) {
+    $a = shortcode_atts(['id' => ''], $a);
+    $p = eds_get_product($a['id']);
+    return $p ? $p->get_short_description() : '';
+});
+
+add_shortcode('prix_produit', function($a) {
+    $a = shortcode_atts(['id' => ''], $a);
+    $p = eds_get_product($a['id'] ?: get_the_ID());
+    return $p ? wc_price($p->get_price()) : '';
+});
+
+add_shortcode('etiquettes_produit', function($a) {
+    $a = shortcode_atts(['id' => '', 'separateur' => ' · '], $a);
+    $tags = get_the_terms($a['id'] ?: get_the_ID(), 'product_tag');
+    if (empty($tags) || is_wp_error($tags)) return '';
+    return implode($a['separateur'], array_column((array)$tags, 'name'));
+});
+
+add_shortcode('categorie_produit',              function($a) { $a = shortcode_atts(['id' => ''], $a); return eds_get_cat($a['id'] ?: get_the_ID()); });
+add_shortcode('categorie_produit_courant',      function()  { return eds_get_cat(get_the_ID()); });
+add_shortcode('sous_categorie_produit',         function($a) { $a = shortcode_atts(['id' => ''], $a); return eds_get_cat($a['id'] ?: get_the_ID(), true); });
+add_shortcode('sous_categorie_produit_courant', function()  { return eds_get_cat(get_the_ID(), true); });
+
+add_shortcode('genre_produit', function($a) {
+    $a = shortcode_atts(['id' => ''], $a);
+    $id   = $a['id'] ?: get_the_ID();
+    $cat  = eds_get_cat($id);
+    $sous = eds_get_cat($id, true);
+    if ($cat && $sous) return $cat . ' · ' . $sous;
+    return $cat ?: $sous;
+});
+
+
+// Exclure les frais de port du total sur la page panier uniquement
+add_filter('woocommerce_calculated_total', function($total, $cart) {
+    if (is_cart() && !is_checkout()) {
+        $total = $cart->get_subtotal() + $cart->get_subtotal_tax();
+    }
+    return $total;
+}, 10, 2);
+
+
+
+// Panier - cross-sells
+
+
+// Alternative 3 : Via gettext (force brute)
+add_filter('gettext', function($translated, $text, $domain) {
+    if ( $domain !== 'woocommerce' ) return $translated;
+    if ($text === 'Cross-sell products' || $text === 'You may be interested in…' || $text === 'You may be interested in&hellip;') {
+        return 'Vous aimerez peut-être aussi :';
+    }
+    return $translated;
+}, 10, 3);
+
+
+// Masquer les frais de port sur la page commande jusqu'à saisie d'adresse complète
+add_filter('woocommerce_cart_ready_to_calc_shipping', function($show) {
+    if (is_checkout()) {
+        $customer = WC()->customer;
+        if (empty($customer->get_shipping_postcode()) || 
+            empty($customer->get_shipping_country()) ||
+            empty($customer->get_shipping_city()) ||
+            empty($customer->get_shipping_address_1())) {
+            return false;
+        }
+    }
+    return true;
+});
+
+add_action('wp_footer', function() {
+    if (is_checkout()) {
+        ?>
+        <script>
+        jQuery(document).ready(function($) {
+            const criticalFields = ['#shipping-address_1', '#shipping-postcode', '#shipping-city'];
+            let timeout;
+            
+            function checkFields() {
+                let allFilled = true;
+                criticalFields.forEach(function(selector) {
+                    if (!$(selector).val()) {
+                        allFilled = false;
+                    }
+                });
+                
+                if (!allFilled) {
+                    $('body').removeClass('has-shipping-address');
+                }
+            }
+            
+            function toggleClass() {
+                const hasValidShipping = $('.wc-block-components-radio-control .wc-block-components-radio-control__option').length > 0;
+                
+                let allFilled = true;
+                criticalFields.forEach(function(selector) {
+                    if (!$(selector).val()) {
+                        allFilled = false;
+                    }
+                });
+                
+                $('body').toggleClass('has-shipping-address', hasValidShipping && allFilled);
+            }
+            
+            // Vérifier immédiatement si un champ est vidé
+            $(document.body).on('change input', criticalFields.join(', '), function() {
+                clearTimeout(timeout);
+                checkFields();
+                timeout = setTimeout(toggleClass, 100);
+            });
+            
+            // Observer les changements dans le DOM
+            const observer = new MutationObserver(toggleClass);
+            const target = document.querySelector('.wc-block-checkout__shipping-option');
+            if (target) {
+                observer.observe(target, { childList: true, subtree: true });
+            }
+            
+            toggleClass();
+        });
+        </script>
+        <?php
+    }
+});
+
+
+/* ajouter_frais_transaction_woopayments */
+
+function calcul_fdt( $subtotal, $shipping ) {
+    $total = $subtotal + $shipping;
+    $ht = (0.015 * $total + 0.25) - (0.0015 * $total + 0.02);
+    return round( $ht * 1.20, 2 );
+}
+
+/* Blocks (Store API) */
+add_action('woocommerce_store_api_cart_calculate_fees', function( $cart ){
+    $fdt = calcul_fdt( $cart->get_subtotal(), $cart->get_shipping_total() );
+    if ( $fdt > 0 ) $cart->add_fee('Frais de transaction', $fdt, false);
+});
+
+/* Legacy / création commande */
+add_action('woocommerce_cart_calculate_fees', function(){
+    if ( is_admin() && ! defined('DOING_AJAX') ) return;
+    $cart = WC()->cart;
+    if ( ! $cart ) return;
+
+    $fdt = calcul_fdt( $cart->get_subtotal(), $cart->get_shipping_total() );
+    if ( $fdt > 0 ) $cart->add_fee('Frais de transaction', $fdt, false);
+});
+
+
+// Styles carte bancaire
+
+add_filter('wcpay_upe_appearance', function($appearance) {
+    $appearance = array(
+        'theme' => 'stripe',
+        'variables' => array(
+            'colorPrimary' => '#e27865',
+            'colorBackground' => '#f3efe6',
+            'colorText' => '#2b2d2f',
+            'colorDanger' => '#e27865',
+            'fontFamily' => 'Assistant, Helvetica, Arial, sans-serif',
+            'borderRadius' => '4px',
+        ),
+        'rules' => array(
+            // État normal
+            '.Input' => array(
+                'backgroundColor' => '#f3efe6',
+                'border' => '0px',
+                'boxShadow' => 'none',
+            ),
+            
+            // Focus
+            '.Input:focus' => array(
+                'backgroundColor' => '#fffdfb',
+                'border' => '0px',
+                'boxShadow' => '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(0, 0, 0, 0.02), 0 0 0 1px #e27865',
+            ),
+            
+            // Erreur
+            '.Input--invalid' => array(
+                'backgroundColor' => '#fffdfb',
+                'boxShadow' => '0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(0, 0, 0, 0.02), 0 0 0 2px #e27865',
+                
+            ),
+            
+            // Message d'erreur
+            '.Error' => array(
+                'color' => '#e27865',
+            ),
+        ),
+    );
+    
+    return $appearance;
+}, 10, 1);
+
+
+
+// === CUSTOMIZATION PAGE CONFIRMATION COMMANDE ===
+
+add_action('wp_footer', function() {
+    if (is_wc_endpoint_url('order-received')) {
+        ?>
+        <script>
+        window.addEventListener('load', function() {
+            const shippedVia = document.querySelector('.woocommerce-table--order-details .shipped_via');
+            if (shippedVia) {
+                const method = shippedVia.textContent.replace('via ', '').trim();
+                const shippingRow = shippedVia.closest('tr');
+                const th = shippingRow.querySelector('th');
+                th.innerHTML = 'Expédition : <span style="font-weight: 500;">' + method + '</span>';
+                const td = shippingRow.querySelector('td');
+                td.innerHTML = td.querySelector('.woocommerce-Price-amount').outerHTML;
+            }
+            
+            function hideIdenticalAddresses() {
+                const billingAddr = document.querySelector('.woocommerce-column--billing-address address');
+                const shippingAddr = document.querySelector('.woocommerce-column--shipping-address address');
+                const pointRelais = document.querySelector('.laposteproexp-order-parcelpoint');
+                
+                if (!billingAddr || !shippingAddr) {
+                    setTimeout(hideIdenticalAddresses, 100);
+                    return;
+                }
+                
+                const getBrContent = (addr) => {
+                    const clone = addr.cloneNode(true);
+                    clone.querySelectorAll('p').forEach(p => p.remove());
+                    return clone.textContent.replace(/\s+/g, ' ').trim();
+                };
+                
+                if (pointRelais) {
+    const shippingCol = document.querySelector('.woocommerce-column--shipping-address');
+    if (shippingCol) shippingCol.style.display = 'none';
+} else if (getBrContent(billingAddr) === getBrContent(shippingAddr)) {
+    document.querySelector('.woocommerce-column--shipping-address').style.display = 'none';
+    document.querySelector('.woocommerce-column--billing-address h2').textContent = 'Adresse de livraison';
+}
+            }
+            
+            hideIdenticalAddresses();
+        });
+        </script>
+        <?php
+    }
+});
+
+add_action('wp_enqueue_scripts', function() {
+    if (is_wc_endpoint_url('order-received')) {
+        // CSS - rechargement automatique pendant développement
+        wp_enqueue_style(
+            'confirmation-custom',
+            get_stylesheet_directory_uri() . '/css/confirmation.css',
+            array(),
+            '1.0'
+        );
+        
+        // JavaScript - rechargement automatique pendant développement
+        wp_enqueue_script(
+            'confirmation-custom',
+            get_stylesheet_directory_uri() . '/js/confirmation.js',
+            array(),
+            '1.0',
+            true
+        );
+    }
+}, 100);
+
+/* Message confirmation de commande */
+
+add_filter( 'woocommerce_thankyou_order_received_text', 'custom_long_confirmation_text', 10, 2 );
+
+function custom_long_confirmation_text( $text, $order ) {
+    if ( ! $order ) return $text;
+    
+    $first_name = $order->get_billing_first_name();
+    
+    $message = sprintf(
+        'Merci, %s. Votre commande a bien été enregistrée et sera traitée dans les meilleurs délais.<br>Un courrier électronique vient de vous être envoyé. S\'il n\'apparaît pas dans votre boîte de réception, veuillez vérifier dans vos messages indésirables.',
+        $first_name ?: 'pour votre commande'
+    );
+    
+    return $message;
+}
+
+// === CUSTOMIZATION EMAIL WOOCOMMERCE ===
+
+// 1. Modifier les totaux dans l'email (exposant + expédition + moyen de paiement)
+add_filter('woocommerce_get_order_item_totals', 'custom_modify_order_totals_email', 10, 3);
+function custom_modify_order_totals_email($total_rows, $order, $tax_display) {
+    // Vérifier qu'on est dans un contexte email
+    if (!is_admin() && !is_wc_endpoint_url()) {
+        
+        // Modifier le label Total avec exposant
+        if (isset($total_rows['order_total'])) {
+            $total_rows['order_total']['label'] = 'Total<sup style="font-weight: 500;">1</sup>&nbsp;:';
+        }
+        
+        // Modifier le label Expédition
+        if (isset($total_rows['shipping'])) {
+            $shipping_methods = $order->get_shipping_methods();
+            $shipping_name = '';
+            
+            foreach ($shipping_methods as $shipping_method) {
+                $shipping_name = $shipping_method->get_method_title();
+                $shipping_name = str_replace('via ', '', $shipping_name);
+                $shipping_name = str_replace('via', '', $shipping_name);
+                $shipping_name = trim($shipping_name);
+                break;
+            }
+            
+            if ($shipping_name) {
+                $total_rows['shipping']['label'] = 'Expédition : <span style="font-weight: 500; display: inline;">' . esc_html($shipping_name) . '</span>';
+            }
+        }
+        
+        // Ajouter le moyen de paiement avec détails carte
+        if (!isset($total_rows['payment_method'])) {
+            $payment_title = custom_get_payment_details($order);
+            
+            if (!empty($payment_title)) {
+                $total_rows['payment_method'] = array(
+                    'label' => 'Moyen de paiement :',
+                    'value' => esc_html($payment_title),
+                );
+            }
+        }
+    }
+    return $total_rows;
+}
+
+// Fonction pour récupérer les détails de paiement WooPayments
+function custom_get_payment_details($order) {
+    $payment_method = $order->get_payment_method();
+    
+    // WooPayments : récupérer les détails de la carte
+    if ($payment_method === 'woocommerce_payments') {
+        $details_json = $order->get_meta('_wcpay_payment_method_details');
+        
+        if (!empty($details_json)) {
+            $details = json_decode($details_json, true);
+            
+            if (isset($details['card'])) {
+                $card = $details['card'];
+                $brand = isset($card['brand']) ? ucfirst($card['brand']) : '';
+                $last4 = isset($card['last4']) ? $card['last4'] : '';
+                $funding = isset($card['funding']) ? $card['funding'] : '';
+                
+                // Format : "Carte Visa crédit - 0003"
+                $funding_fr = ($funding === 'credit') ? 'crédit' : (($funding === 'debit') ? 'débit' : '');
+                
+                if ($brand && $last4) {
+                    $result = 'Carte ' . $brand;
+                    if ($funding_fr) {
+                        $result .= ' ' . $funding_fr;
+                    }
+                    $result .= ' - ' . $last4;
+                    return $result;
+                }
+            }
+        }
+    }
+    
+    // Fallback : titre de la gateway
+    if (!empty($payment_method) && WC()->payment_gateways()) {
+        $gateways = WC()->payment_gateways()->payment_gateways();
+        if (isset($gateways[$payment_method])) {
+            return $gateways[$payment_method]->get_title();
+        }
+    }
+    
+    return '';
+}
+
+// 2. Ajouter texte TVA sous le tableau (avant la note client)
+add_action('woocommerce_email_after_order_table', 'custom_add_tva_notice_in_email', 1, 4);
+function custom_add_tva_notice_in_email($order, $sent_to_admin, $plain_text, $email) {
+    // Uniquement pour les emails clients (pas admin)
+    if (!$sent_to_admin) {
+        echo '<table style="border-collapse: collapse; max-width: 600px; margin: 0 auto 0; width: 100%;" align="center" width="100%"><tr><td style="padding: 12px; min-width: 60px; font-size: 12px; color: #666666; font-family: \'Helvetica Neue\',Helvetica,Roboto,Arial,sans-serif; text-align: left;" align="left">1 - T.V.A. non-applicable, article 293B du C.G.I.</td></tr></table>';
+    }
+}
+
+// === CUSTOMISATION ADRESSES DANS EMAILS WOOCOMMERCE ===
+
+// 1. Supprimer les liens tel: et mailto: dans les emails
+add_filter('woocommerce_email_customer_details_fields', 'custom_remove_clickable_links_in_email', 10, 3);
+
+function custom_remove_clickable_links_in_email($fields, $sent_to_admin, $order) {
+    // Transformer le téléphone en texte simple
+    if (isset($fields['billing_phone'])) {
+        $fields['billing_phone']['value'] = $order->get_billing_phone();
+    }
+    // Transformer l'email en texte simple  
+    if (isset($fields['billing_email'])) {
+        $fields['billing_email']['value'] = $order->get_billing_email();
+    }
+    return $fields;
+}
+
+// 2. Supprimer les balises <a> autour du tel et email via filtre sur le contenu
+add_filter('woocommerce_mail_content', 'custom_remove_email_links', 10, 1);
+
+function custom_remove_email_links($content) {
+    // Supprimer les liens tel:
+    $content = preg_replace('/<a[^>]*href=["\']tel:[^"\']*["\'][^>]*>([^<]*)<\/a>/i', '$1', $content);
+    // Supprimer les liens mailto:
+    $content = preg_replace('/<a[^>]*href=["\']mailto:[^"\']*["\'][^>]*>([^<]*)<\/a>/i', '$1', $content);
+    // Supprimer les liens Cloudflare email protection
+    $content = preg_replace('/<a[^>]*href="[^"]*cdn-cgi\/l\/email-protection[^"]*"[^>]*>[^<]*<\/a>/i', '', $content);
+    // Supprimer les emails en texte brut dans les blocs adresse (avec le <br> qui précède)
+    $content = preg_replace('/<br>\s*[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i', '', $content);
+    return $content;
+}
+
+// 3. Gestion de l'affichage des adresses selon le mode d'expédition
+add_action('woocommerce_email_customer_details', 'custom_email_addresses_display', 5, 4);
+
+function custom_email_addresses_display($order, $sent_to_admin, $plain_text, $email) {
+    if ($plain_text || $sent_to_admin) return;
+    
+    $parcel_point = $order->get_meta('laposteproexp_parcel_point');
+    
+    if ($parcel_point && !empty($parcel_point->name)) {
+    // === CAS POINT RELAIS ===
+    // Masquer l'adresse de livraison + supprimer la bordure de l'adresse de facturation
+    echo '<style>
+        .shipping-address-container { display: none !important; }
+        .address-container h2 { border-top: none !important; }
+    </style>';
+    
+    // Générer le bloc point relais (sans bordure en haut, car la note TVA est juste au-dessus)
+    echo custom_generate_parcel_point_html($parcel_point);
+    
+} else {
+        // === CAS LIVRAISON À DOMICILE ===
+        $billing = custom_get_address_string($order, 'billing');
+        $shipping = custom_get_address_string($order, 'shipping');
+        
+        if ($billing === $shipping) {
+            // Adresses identiques : masquer facturation, renommer livraison
+            echo '<style>
+                .address-container { display: none !important; }
+                .shipping-address-container h2 { visibility: hidden; position: relative; }
+                .shipping-address-container h2::after {
+                    content: "Adresse de livraison et de facturation";
+                    visibility: visible;
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                }
+            </style>';
+        }
+    }
+}
+
+function custom_get_address_string($order, $type) {
+    $fields = ['first_name', 'last_name', 'address_1', 'address_2', 'postcode', 'city', 'country'];
+    $parts = [];
+    foreach ($fields as $field) {
+        $method = "get_{$type}_{$field}";
+        $parts[] = $order->$method();
+    }
+    return strtolower(preg_replace('/\s+/', '', implode('', $parts)));
+}
+
+function custom_generate_parcel_point_html($parcel_point) {
+    $html = '
+    <table cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 0 auto 40px; border-collapse: collapse;">
+        <tr>
+            <td style="padding-top: 40px;">
+                <h2 style="margin: 0 0 20px; font-size: 20px; font-weight: 700; color: #333; text-align: center; font-family: Arial, Helvetica, sans-serif; padding-top: 40px; border-top: 1px solid #e5e5e5;">Point de retrait</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table cellspacing="0" cellpadding="0" border="0" style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td valign="top" style="width: 50%; padding: 12px; background-color: #f7f7f7; border: 1px solid #e5e5e5; border-right: none;">
+                            <strong style="display: block; margin-bottom: 8px; color: #333;">' . esc_html($parcel_point->name) . '</strong>
+                            <span style="color: #666; line-height: 1.6;">' . esc_html($parcel_point->address) . '<br>' . esc_html($parcel_point->zipcode) . ' ' . esc_html($parcel_point->city) . '</span>
+                        </td>
+                        <td valign="top" style="width: 50%; padding: 12px; background-color: #f7f7f7; border: 1px solid #e5e5e5; text-align: right;">
+                            <strong style="display: block; margin-bottom: 8px; color: #333; text-align: right;">Horaires d\'ouverture</strong>
+                            <span style="color: #666; font-size: 14px; line-height: 1.8; text-align: right; display: block;">' . custom_format_opening_hours($parcel_point->opening_hours) . '</span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>';
+    
+    return $html;
+}
+
+function custom_format_opening_hours($hours) {
+    if (empty($hours)) return 'Non disponibles';
+    
+    $days_fr = [
+        'MONDAY' => 'Lun',
+        'TUESDAY' => 'Mar',
+        'WEDNESDAY' => 'Mer',
+        'THURSDAY' => 'Jeu',
+        'FRIDAY' => 'Ven',
+        'SATURDAY' => 'Sam',
+        'SUNDAY' => 'Dim'
+    ];
+    
+    $output = [];
+    foreach ($hours as $day) {
+        $day_name = $days_fr[$day->weekday] ?? $day->weekday;
+        
+        if (empty($day->opening_periods)) {
+            $output[] = $day_name . ' : Fermé';
+        } else {
+            $periods = [];
+            foreach ($day->opening_periods as $period) {
+                $periods[] = $period->open . '-' . $period->close;
+            }
+            $output[] = $day_name . ' : ' . implode(', ', $periods);
+        }
+    }
+    
+    return implode('<br>', $output);
+}
+
+
+// Shortcode description tag
+
+// Shortcode [tag_desc]
+function wc_tag_desc_shortcode() {
+    if ( ! is_product_tag() ) {
+        return '';
+    }
+
+    $tag = get_queried_object();
+    if ( ! $tag || empty( $tag->description ) ) {
+        return '';
+    }
+
+    return '<div class="wc-tag-description">' . wp_kses_post( $tag->description ) . '</div>';
+}
+add_shortcode( 'tag_desc', 'wc_tag_desc_shortcode' );
+
+
+
+// Force les requêtes produit à filtrer par product_tag sur les archives d'étiquettes produit.
+
+add_filter( 'woocommerce_product_query_tax_query', function( $tax_query ) {
+
+    if ( ! is_tax( 'product_tag' ) ) {
+        return $tax_query;
+    }
+
+    $term = get_queried_object();
+
+    if ( ! $term || ! isset( $term->slug ) ) {
+        return $tax_query;
+    }
+
+    $tax_query[] = array(
+        'taxonomy' => 'product_tag',
+        'field'    => 'slug',
+        'terms'    => $term->slug,
+    );
+
+    return $tax_query;
+
+}, 10 );
+
+
+add_action( 'wp_footer', function() {
+    if ( ! is_tax( 'product_tag' ) ) return;
+
+    $monarch = isset( $GLOBALS['et_monarch'] ) ? $GLOBALS['et_monarch'] : null;
+    if ( ! $monarch ) return;
+
+    $opts = $monarch->monarch_options;
+
+    // Sidebar flottante (desktop)
+    $display_all = isset( $opts['sharing_sidebar_display_all'] ) ? $opts['sharing_sidebar_display_all'] : false;
+    printf(
+        '<div class="et_social_sidebar_networks et_social_visible_sidebar et_social_%8$s et_social_%6$s et_social_sidebar_%1$s%2$s%3$s%7$s%9$s%10$s">
+            %4$s%5$s
+            <span class="et_social_hide_sidebar et_social_icon"></span>
+        </div>',
+        esc_attr( $opts['sharing_sidebar_icon_style'] ),
+        $opts['sharing_sidebar_counts'] ? ' et_social_sidebar_withcounts' : '',
+        $opts['sharing_sidebar_total'] ? ' et_social_withtotalcount' : '',
+        '', // total count HTML optionnel
+        $monarch->get_icons_list( 'sidebar', '', false, $display_all ),
+        esc_attr( $opts['sharing_sidebar_icon_shape'] ),
+        ( isset( $opts['sharing_sidebar_spacing'] ) && $opts['sharing_sidebar_spacing'] ) ? ' et_social_space' : '',
+        esc_attr( $opts['sharing_sidebar_animation'] . ' et_social_animated' ),
+        ( isset( $opts['sharing_sidebar_mobile'] ) && $opts['sharing_sidebar_mobile'] ) ? ' et_social_mobile_off' : ' et_social_mobile_on',
+        ( isset( $opts['sharing_sidebar_sidebar_orientation'] ) && 'right' == $opts['sharing_sidebar_sidebar_orientation'] ) ? ' et_social_sidebar_networks_right' : ''
+    );
+
+    // Barre mobile (sous 1024px)
+    if ( ! ( isset( $opts['sharing_sidebar_mobile'] ) && $opts['sharing_sidebar_mobile'] ) ) {
+        printf(
+            '<div class="et_social_mobile_button"></div>
+            <div class="et_social_mobile et_social_fadein">
+                <div class="et_social_heading">%1$s</div>
+                <span class="et_social_close"></span>
+                <div class="et_social_networks et_social_simple et_social_rounded et_social_left%2$s">
+                    %3$s
+                </div>
+            </div>
+            <div class="et_social_mobile_overlay"></div>',
+            esc_html__( 'Share This', 'Monarch' ),
+            $opts['sharing_sidebar_counts'] ? ' et_social_withcounts' : '',
+            $monarch->get_icons_list( 'sidebar', '', true, $display_all )
+        );
+    }
+}, 20 );
+
+
+?>
