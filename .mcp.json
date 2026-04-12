@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "wordpress": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@automattic/mcp-wordpress-remote@latest"]
+    }
+  }
+}
